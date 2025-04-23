@@ -7,7 +7,6 @@ import cors from 'cors';
 import quizRoutes from './routes/quizRoutes.mjs';
 import { logError, logInfo } from './logger.mjs';
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -39,7 +38,6 @@ app.use((err, req, res, next) => {
     }
     next(err); // تابع معالجة الأخطاء الأخرى
 });
-
 
 // إعداد المسارات
 app.use('/api', quizRoutes);
@@ -92,22 +90,19 @@ app.get('/api/help', (req, res) => {
     });
 });
 
-
 // مسار توضيحي لأي طلبات غير صحيحة
 app.use((req, res) => {
     const currentTime = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
     const message = {
         success: false,
         message: '🤔 يبدو أنك طلبت مسارًا غير صحيح!',
-        requestedPath: 🔗 المسار المطلوب: /api/help,
-        timestamp: 📅 التاريخ والوقت: ${currentTime},
-        dev:  Mohamed Elsony,
+        requestedPath: `🔗 المسار المطلوب: ${req.originalUrl}`,  // إصلاح النص
+        timestamp: `📅 التاريخ والوقت: ${currentTime}`,
+        dev: 'Mohamed Elsony', // إضافة اسم المطور بشكل صحيح
         advice: '⚠️ يرجى التأكد من صحة الرابط أو استخدام واجهة برمجة التطبيقات الصحيحة.'
-
     };
     res.status(404).json(message);
 });
-
 
 // استخدام middleware لمعالجة الأخطاء العامة
 function errorHandler(err, req, res, next) {
@@ -119,7 +114,6 @@ function errorHandler(err, req, res, next) {
     });
 }
 app.use(errorHandler);
-
 
 // أحداث النظام لإغلاق السيرفر بشكل نظيف
 process.on('SIGINT', () => {
@@ -140,15 +134,15 @@ process.on('uncaughtException', async (error) => {
 // تشغيل السيرفر
 app.listen(PORT, () => {
     const environment = process.env.NODE_ENV || 'development';
-    const rateLimitWindow = process.env.RATE_LIMIT_WINDOW_MS ? ${parseInt(process.env.RATE_LIMIT_WINDOW_MS) / 1000} seconds : '1 hour';
+    const rateLimitWindow = process.env.RATE_LIMIT_WINDOW_MS ? `${parseInt(process.env.RATE_LIMIT_WINDOW_MS) / 1000} seconds` : '1 hour';
     const rateLimitMax = process.env.RATE_LIMIT_MAX || 500;
 
-    logInfo(
+    logInfo(`
         🚀 Server is running successfully on: 
         📍 Server Address: http://localhost:${PORT} 
         🌍 Environment: ${environment} 
         ⏳ Rate Limit Window: ${rateLimitWindow} 
         🚦 Maximum Requests: ${rateLimitMax} requests per hour 
         🎉 Get ready for an amazing learning experience!
-    );
-});  
+    `);
+});
