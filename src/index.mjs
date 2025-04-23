@@ -44,15 +44,66 @@ app.use((err, req, res, next) => {
 // إعداد المسارات
 app.use('/api', quizRoutes);
 
+// مسار المساعده 
+app.get('/api/help', (req, res) => {
+    const routes = [
+        {
+            path: '/api/categories',
+            method: 'GET',
+            description: 'عرض جميع الفئات والمواضيع',
+        },
+        {
+            path: '/api/questions?page=1&limit=10',
+            method: 'GET',
+            description: 'عرض جميع الأسئلة بصفحات محددة',
+        },
+        {
+            path: '/api/categories/1/topics',
+            method: 'POST',
+            description: 'عرض مواضيع فئة معينة',
+        },
+        {
+            path: '/api/questions/random?count=5',
+            method: 'PUT',
+            description: 'جلب أسئلة عشوائية',
+        },
+        {
+            path: '/api/categories/1/topics/some-topic/questions',
+            method: 'PUT',
+            description: 'عرض جميع الأسئلة لموضوع معين',
+        },
+        {
+            path: '/api/search?q=الصلاة',
+            method: 'DELETE',
+            description: 'البحث في الأسئلة عبر النص',
+        },
+        {
+            path: '/api/categories/1/questions?page=1&limit=10',
+            method: 'GET',
+            description: 'عرض جميع الأسئلة لفئة معينة',
+        }
+    ];
+
+    res.json({
+        success: true,
+        message: '📚 قائمة المسارات المتاحة:',
+        routes,
+        timestamp: new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' }),
+    });
+});
+
+
 // مسار توضيحي لأي طلبات غير صحيحة
 app.use((req, res) => {
     const currentTime = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
     const message = {
         success: false,
         message: '🤔 يبدو أنك طلبت مسارًا غير صحيح!',
-        requestedPath: `🔗 المسار المطلوب: ${req.originalUrl}`,
-        timestamp: `📅 التاريخ والوقت: ${currentTime}`,
+        requestedPath: 🔗 المسار المطلوب: /api/help,
+        timestamp: 📅 التاريخ والوقت: ${currentTime},
+        dev:  Mohamed Elsony,
         advice: '⚠️ يرجى التأكد من صحة الرابط أو استخدام واجهة برمجة التطبيقات الصحيحة.'
+
     };
     res.status(404).json(message);
 });
@@ -89,15 +140,15 @@ process.on('uncaughtException', async (error) => {
 // تشغيل السيرفر
 app.listen(PORT, () => {
     const environment = process.env.NODE_ENV || 'development';
-    const rateLimitWindow = process.env.RATE_LIMIT_WINDOW_MS ? `${parseInt(process.env.RATE_LIMIT_WINDOW_MS) / 1000} seconds` : '1 hour';
+    const rateLimitWindow = process.env.RATE_LIMIT_WINDOW_MS ? ${parseInt(process.env.RATE_LIMIT_WINDOW_MS) / 1000} seconds : '1 hour';
     const rateLimitMax = process.env.RATE_LIMIT_MAX || 500;
 
-    logInfo(`
+    logInfo(
         🚀 Server is running successfully on: 
         📍 Server Address: http://localhost:${PORT} 
         🌍 Environment: ${environment} 
         ⏳ Rate Limit Window: ${rateLimitWindow} 
         🚦 Maximum Requests: ${rateLimitMax} requests per hour 
         🎉 Get ready for an amazing learning experience!
-    `);
-});
+    );
+});  
